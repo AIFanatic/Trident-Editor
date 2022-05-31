@@ -1,0 +1,32 @@
+{
+  "name": "trident-editor",
+  "version": "1.0.0",
+  "main": "dist/trident-ui.js",
+  "types": "dist/esm/trident-ui-esm.d.ts",
+  "module": "dist/esm/trident-ui-esm.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/react": "^17.0.43",
+    "@types/react-dom": "^17.0.14",
+    "@types/wicg-file-system-access": "^2020.9.5",
+    "esbuild": "^0.14.31",
+    "typescript": "^4.6.3"
+  },
+  "scripts": {
+    "dev": "esbuild ./src/index.ts --bundle --outfile=./dist/trident-ui-esm.js --loader:.png=file --loader:.ttf=file --keep-names --target=esnext --format=esm --watch",
+    "build:all": "npm run build",
+    "build": "npm run build:iife-bundle && npm run build:esm-bundle && npm run build:esm",
+    "build:iife-bundle": "esbuild src/index.ts --bundle --outfile=dist/trident-ui.js --loader:.png=file --loader:.ttf=file --keep-names --target=esnext --format=iife --global-name=tridentui",
+    "build:esm-bundle": "esbuild src/index.ts --bundle --outfile=dist/esm/trident-ui-esm.js --loader:.png=file --loader:.ttf=file --keep-names --target=esnext --format=esm",
+    "build:esm": "tsc -m esnext && cp ./dist/esm/index.d.ts ./dist/esm/trident-ui-esm.d.ts",
+    "test": "esr node_modules/jasmine/bin/jasmine.js ./tests/**/*[tT]est.ts"
+  },
+  "dependencies": {
+    "flexlayout-react": "^0.7.1",
+    "nanoevents": "^6.0.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-icons": "^4.3.1",
+    "trident": "/Users/mac/Downloads/temp/Trident-Take2"
+  }
+}

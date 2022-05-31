@@ -1,0 +1,64 @@
+interface IDragEvent {
+    data: any;
+    validation: (data: IDragEvent, to: any) => boolean;
+};
+
+class _ExtendedDataTransfer {
+    private uid: number;
+    private data: IDragEvent[];
+
+    constructor() {
+        this.uid = 0;
+        this.data = [];
+    }
+
+    public set<T>(e:  React.DragEvent<T>, data: IDragEvent) {
+        const dataTransfer = e.dataTransfer;
+        const uid = ++this.uid;
+
+        console.log("setData", "_internal-" + uid, uid.toString())
+        dataTransfer.setData("_internal-" + uid, uid.toString());
+        this.data[uid] = data;
+    }
+
+    public get<T>(e: React.DragEvent<T>) {
+        const dataTransfer = e.dataTransfer;
+
+        for (let type of dataTransfer.types) {
+            if (type.includes("_internal-")) {
+                const uid = parseInt(type.split("_internal-")[1]);
+                const data = this.data[uid];
+                return data.data
+            }
+        }
+        return false;
+    }
+
+    public validate<T>(e: React.DragEvent<T>, to: any): boolean {
+        const dataTransfer = e.dataTransfer;
+
+        console.log("validate", dataTransfer.types)
+        for (let type of dataTransfer.types) {
+            if (type.includes("_internal-")) {
+                const uid = parseInt(type.split("_internal-")[1]);
+                const data = this.data[uid];
+                return data.validation(data.data, to);
+            }
+        }
+        return false;
+    }
+
+    public remove<T>(e: React.DragEvent<T>) {
+        const dataTransfer = e.dataTransfer;
+
+        for (let type of dataTransfer.types) {
+            if (type.includes("_internal-")) {
+                const uid = type.split("_internal-")[1];
+                delete this.data[uid];
+                return;
+            }
+        }
+    }
+}
+
+export const ExtendedDataTransfer = new _ExtendedDataTransfer();
